@@ -19,6 +19,7 @@ class Board:
             for j in range(ROW_SIZE):
                 print(self.__grid[i][j], end=' ')
             print('')
+        print('0 1 2 3 4 5')
             
     def move(self, player: int, col: int) -> bool:
         for i in range(COL_SIZE - 1, -1, -1):
