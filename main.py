@@ -1,5 +1,9 @@
+from src.Board import Board
+
 def main():
-    print('here')
+    
+    test = Board()
+    
     pass
 
 if __name__ == '__main__':
