@@ -13,6 +13,9 @@ class Board:
             self.__grid = [[EMPTY]*ROW_SIZE for i in range(COL_SIZE)]
         else:
             self.__grid = grid
+            
+    def getGrid(self) -> List[List]:
+        return self.__grid
         
     def printGrid(self) -> None:
         for i in range(COL_SIZE):

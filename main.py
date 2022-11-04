@@ -1,39 +1,43 @@
 from src.Board import Board
+from src.Antwan import Antwan
 
 def main():
     
-    GameBoard = Board()
-    win = False
-    turn = 0
-    GameBoard.printGrid()
+    test = Antwan()
+    test.expand(None, 0)
+    
+    # GameBoard = Board()
+    # win = False
+    # turn = 0
+    # GameBoard.printGrid()
     
     
-    while True:
-        movecol = input()
-        if len(movecol) != 1:
-            print('invalid move')
-            continue
+    # while True:
+    #     movecol = input()
+    #     if len(movecol) != 1:
+    #         print('invalid move')
+    #         continue
             
-        if not movecol.isdigit():
-            print('invalid move')
-            continue
+    #     if not movecol.isdigit():
+    #         print('invalid move')
+    #         continue
         
-        movecol = int(movecol)
+    #     movecol = int(movecol)
         
-        if not GameBoard.move(turn, movecol):
-            print('invalid move')
-            continue
+    #     if not GameBoard.move(turn, movecol):
+    #         print('invalid move')
+    #         continue
         
-        GameBoard.printGrid()
-        win = GameBoard.checkWin(movecol)
-        if win:
-            break
+    #     GameBoard.printGrid()
+    #     win = GameBoard.checkWin(movecol)
+    #     if win:
+    #         break
         
-        turn = int(not turn)
+    #     turn = int(not turn)
     
-    print(f'player {turn} won!')
+    # print(f'player {turn} won!')
     
-    pass
+    # pass
 
 if __name__ == '__main__':
     main()
