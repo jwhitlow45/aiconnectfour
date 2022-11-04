@@ -9,32 +9,16 @@ class Antwan:
     def dfs():
         pass
         
-    def expand(self, boardState: Board, symbol: int, winScore: int) -> Node:
-        grid = [
-            ['x','x','x','x','x','x'],
-            ['x','x','x','x','0','x'],
-            ['x','x','x','x','0','x'],
-            ['x','x','x','x','0','x'],
-            ['x','x','x','x','1','x']
-        ]
+    def expand(self, expNode: Node, symbol: int, winScore: int) -> Node:
         
-        boardState = Board(grid)
+        tempStates = [Board(deepcopy(expNode.state.getGrid())) for i in range(ROW_SIZE)]
+        indexStates = [(tempStates[i], i) for i in range(ROW_SIZE) if tempStates[i].move(symbol, i)]
         
-        tempStates = [Board(deepcopy(boardState.getGrid())) for i in range(ROW_SIZE)]
-        expandedStates = [tempStates[i] for i in range(ROW_SIZE) if tempStates[i].move(symbol, i)]
-        
-        isWin: bool = False
-        for state in expandedStates:
-            if state.checkWin():
-                if winScore == 1:
-                    isWin = True
-                elif winScore == -1:
-                    return None
-        
-        # return node with score 1 if win is possible
-        if isWin:
-            return Node(expandedStates, 1)
-        return Node(expandedStates, 0)
-            
-            
+        finalNodes = []
+        for state, index in indexStates:
+            if state.checkWin(index):
+                finalNodes.append(Node(state, None, winScore))
+            else:
+                finalNodes.append(Node(state, None, 0))
                 
+        return Node(deepcopy(expNode.state), finalNodes, deepcopy(expNode.score))

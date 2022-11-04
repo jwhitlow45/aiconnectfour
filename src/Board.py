@@ -13,16 +13,18 @@ class Board:
             self.__grid = [[EMPTY]*ROW_SIZE for i in range(COL_SIZE)]
         else:
             self.__grid = grid
-            
-    def getGrid(self) -> List[List]:
-        return self.__grid
-        
-    def printGrid(self) -> None:
+       
+    def __repr__(self) -> None:
+        outstr: str = ''
         for i in range(COL_SIZE):
             for j in range(ROW_SIZE):
-                print(self.__grid[i][j], end=' ')
-            print('')
-        print('0 1 2 3 4 5')
+                outstr += self.__grid[i][j] + ' '
+            outstr += '\n'
+        outstr += '0 1 2 3 4 5'
+        return outstr
+         
+    def getGrid(self) -> List[List]:
+        return self.__grid
             
     def move(self, player: int, col: int) -> bool:
         for i in range(COL_SIZE - 1, -1, -1):
