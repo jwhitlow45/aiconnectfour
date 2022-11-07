@@ -1,24 +1,32 @@
 from typing import List
 from copy import deepcopy
 
-from src.Board import Board, ROW_SIZE
+from src.Board import Board, ROW_SIZE, COL_SIZE, BOT_PIECE, EMPTY
 from src.Node import Node
 
-class Antwan:
+def getScore(node: Node):
     
-    def dfs():
-        pass
+    print(node)
+    if node.state.checkWin(node.moveCol):
+        score = (ROW_SIZE * COL_SIZE - node.depth) // 2
+        # get top row of current column
+        row: int
+        for row in range(COL_SIZE - 1, -1, -1):
+            if node.state.getGrid()[row][node.moveCol] == EMPTY:
+                row += 1
+                break
+            
+        if node.state.getGrid()[row][node.moveCol] == BOT_PIECE:
+            node.score = score
+            return node.score
+        else:
+            node.score = score * -1
+            return node.score
+    if node.depth == ROW_SIZE * COL_SIZE:
+        node.score = 0
+        return node.score
         
-    def expand(self, expNode: Node, symbol: int, winScore: int) -> Node:
+    node.expand(node.piece)
+    for child in node.children:
+        getScore(child)
         
-        tempStates = [Board(deepcopy(expNode.state.getGrid())) for i in range(ROW_SIZE)]
-        indexStates = [(tempStates[i], i) for i in range(ROW_SIZE) if tempStates[i].move(symbol, i)]
-        
-        finalNodes = []
-        for state, index in indexStates:
-            if state.checkWin(index):
-                finalNodes.append(Node(state, None, winScore))
-            else:
-                finalNodes.append(Node(state, None, 0))
-                
-        return Node(deepcopy(expNode.state), finalNodes, deepcopy(expNode.score))

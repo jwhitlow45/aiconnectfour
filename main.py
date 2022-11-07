@@ -1,27 +1,20 @@
 from src.Board import Board
 from src.Node import Node
-from src.Antwan import Antwan
+from src.Antwan import getScore
 
 def main():
     
     grid = [
-        ['x','x','x','x','0','x'],
-        ['x','x','x','x','0','x'],
-        ['x','x','x','x','0','x'],
-        ['x','x','x','x','0','x'],
-        ['x','x','x','x','1','x']
+        ['x','x','x','x','x','x'],
+        ['x','x','x','x','x','x'],
+        ['x','x','x','x','x','x'],
+        ['x','x','x','x','x','x'],
+        ['x','x','x','x','x','x']
     ]
     boardState = Board(grid)
-    myNode = Node(boardState, None, 0)
-        
-    test = Antwan()
-    expands = test.expand(myNode, 0, 1).children
+    myNode = Node(boardState, None, 0, 1)
 
-    print(myNode)
-    print()
-    
-    for node in expands:
-        print(node)
+    getScore(myNode)
     
     # GameBoard = Board()
     # win = False

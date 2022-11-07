@@ -2,6 +2,7 @@ from typing import List
 
 ROW_SIZE = 6
 COL_SIZE = 5
+BOT_PIECE = 1
 EMPTY = 'x'
 
 class Board:
