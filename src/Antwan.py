@@ -7,16 +7,16 @@ from src.Node import Node
 def getScore(node: Node):
     
     print(node)
-    if node.state.checkWin(node.moveCol):
+    if node.state.checkWin(node.lastMove):
         score = (ROW_SIZE * COL_SIZE - node.depth) // 2
         # get top row of current column
         row: int
         for row in range(COL_SIZE - 1, -1, -1):
-            if node.state.getGrid()[row][node.moveCol] == EMPTY:
+            if node.state.getGrid()[row][node.lastMove] == EMPTY:
                 row += 1
                 break
             
-        if node.state.getGrid()[row][node.moveCol] == BOT_PIECE:
+        if node.state.getGrid()[row][node.lastMove] == BOT_PIECE:
             node.score = score
             return node.score
         else:
