@@ -38,7 +38,7 @@ class Board:
     def isInBounds(self, row: int, col: int) -> bool:
         return not (row < 0 or col < 0 or row >= COL_SIZE or col >= ROW_SIZE)
     
-    def checkWin(self, col: int) -> bool:
+    def isWin(self, col: int) -> bool:
         # get top row of current column
         i: int
         for i in range(COL_SIZE - 1, -1, -1):

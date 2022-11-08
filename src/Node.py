@@ -19,9 +19,9 @@ class Node:
         
         self.state: Board = state
         self.children: List[Node] = children
-        self.lastMove = lastMove
+        self.lastMove = lastMove #col that the last move was made in
         self.piece = piece
-        self.score: bool = score
+        self.score: int = score
         self.parent = parent
         self.depth = depth
         

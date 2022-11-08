@@ -14,7 +14,7 @@ def main():
     boardState = Board(grid)
     myNode = Node(boardState, None, 0, 1)
 
-    getScore(myNode)
+    print(getScore(myNode))
     
     # GameBoard = Board()
     # win = False
@@ -39,7 +39,7 @@ def main():
     #         continue
         
     #     GameBoard.printGrid()
-    #     win = GameBoard.checkWin(movecol)
+    #     win = GameBoard.isWin(movecol)
     #     if win:
     #         break
         
