@@ -1,14 +1,14 @@
 from typing import List
 from copy import deepcopy
 
-from src.Board import Board, ROW_SIZE, COL_SIZE, BOT_PIECE, EMPTY
+from src.Board import Board, ROW_SIZE, COL_SIZE, BOT_PIECE , EMPTY
 from src.Node import Node
 
 def getScore(node: Node):
     
     print(node.depth)
     if node.state.isWin(node.lastMove): #isWin() returns a bool
-        score = (ROW_SIZE * COL_SIZE - node.depth) // 2 # doesnt account for other player in tree
+        score = (ROW_SIZE * COL_SIZE - node.depth) // 2  + 7 #should calculate correct score given depth
         # get top row of current column
         row: int
         # traverse down lastMove until you find the spot where the last move was made
