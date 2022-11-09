@@ -82,6 +82,24 @@ def drawBoard(board): #draws the board to make it easier to play
                 pygame.draw.circle(screen, YEL, (col*SQUARE_SIZE+SQUARE_SIZE/2, height - (row*SQUARE_SIZE+SQUARE_SIZE/2)), RADIUS)
     pygame.display.update()
 
+def evaluateWindow(window, piece): # Looks at possible spaces and scores it depending on position
+    score = 0
+    opponentPiece = PLAYER_PIECE
+    if piece == PLAYER_PIECE:
+        opponentPiece = AI_PIECE
+
+    if window.count(piece) == 4:
+        score += 100 # 4 in a row
+    elif window.count(piece) == 3 and window.count(EMPTY) == 1:
+        score += 10 # 3 in a row
+    elif window.count(piece) == 2 and window.count(EMPTY) == 2:
+        score += 5 # 2 in a row
+        
+    if window.count(opponentPiece) == 3 and window.count(EMPTY) == 1:
+        score -= 6 #Block Value
+    
+    return score
+
 def countEmptySpaces(board):
     empties = 0
     for row in board:
@@ -96,7 +114,45 @@ def scorePosition(board, piece): #applying score to state
         return empties
     if winMove(board, PLAYER_PIECE):
         return -empties
-    return 0
+
+    score = 0
+
+    # Center Position Score
+    centerArray = [int(i) for i in list(board[:, COLUMN_COUNT//2])]
+    centerCount = centerArray.count(piece)
+    score += centerCount * 6
+
+    # Horizontal Score
+    for row in range(ROW_COUNT):
+        rowArray = [int(i) for i in list(board[row,:])]
+        for col in range(COLUMN_COUNT - 3):
+            window = rowArray[col:col + WINDOW_LENGTH]
+
+            score += evaluateWindow(window, piece)
+
+    # Vertical Score
+    for col in range(COLUMN_COUNT):
+        colArray = [int(i) for i in list(board[:,col])]
+        for row in range(ROW_COUNT - 3):
+            window = colArray[row:row + WINDOW_LENGTH]
+
+            score += evaluateWindow(window, piece)
+
+    # Pos slope Diagonal
+    for row in range(ROW_COUNT - 3):
+        for col in range(COLUMN_COUNT - 3):
+            window = [board[row + i][col + i] for i in range(WINDOW_LENGTH)]
+
+            score += evaluateWindow(window, piece)
+            
+    # Neg Slope Diagonal 
+    for row in range(ROW_COUNT - 3):
+        for col in range(COLUMN_COUNT - 3):
+            window = [board[row + 3 - i][col + i] for i in range(WINDOW_LENGTH)]
+
+            score += evaluateWindow(window, piece)
+
+    return score
 
 def isTerminalNode(board): #Finds child or Leaf Nodes
     return winMove(board, PLAYER_PIECE) or winMove(board, AI_PIECE) or len(getValidLoc(board)) == 0
