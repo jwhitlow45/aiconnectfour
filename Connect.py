@@ -115,7 +115,7 @@ def scorePosition(board, piece): #applying score to state
             window = rowArray[col:col + WINDOW_LENGTH]
 
             score += evaluateWindow(window, piece)
-
+ 
     # Vertical Score
     for col in range(COLUMN_COUNT):
         colArray = [int(i) for i in list(board[:,col])]
@@ -196,7 +196,6 @@ def getValidLoc(board): #creates a list of valid locations to place
     return validLocations
 
 def pickBestMove(board, piece):
-    
     validLocations = getValidLoc(board)
     bestScore = -1000000
     bestCol = random.choice(validLocations)
@@ -297,4 +296,3 @@ while not gameOver:
 
     if gameOver:
         pygame.time.wait(3000)
-           
