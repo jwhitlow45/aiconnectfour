@@ -1,10 +1,11 @@
 from typing import List
+import math
 from copy import deepcopy
 
 from src.Board import Board, ROW_SIZE
 
 class Node:
-    def __init__(self, state: Board, children: List['Node'], lastMove: int, piece: int, score: int = 0, depth:int = 0, parent:'Node' = None):
+    def __init__(self, state: Board, children: List['Node'], lastMove: int, piece: int, score: int = 0, depth:int = 0, parent:'Node' = None, alpha: float = -math.inf, beta: float = math.inf):
         """constructor
 
         Args:
@@ -24,6 +25,8 @@ class Node:
         self.score: bool = score
         self.parent = parent
         self.depth = depth
+        self.alpha = alpha
+        self.beta = beta
         
     def __repr__(self) -> str:
         outstr: str = ''

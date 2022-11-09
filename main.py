@@ -1,20 +1,24 @@
 from src.Board import Board
 from src.Node import Node
-from src.Antwan import getScore
+from src.Antwan import getScore, abPruning
 
 def main():
-    
+
     grid = [
         ['x','x','x','x','x','x'],
         ['x','x','x','x','x','x'],
         ['x','x','x','x','x','x'],
-        ['x','x','x','x','x','x'],
-        ['x','x','x','x','x','x']
+        ['x','x','1','1','1','x'],
+        ['x','x','-1','-1','-1','x']
     ]
     boardState = Board(grid)
-    myNode = Node(boardState, None, 0, 1)
+    myNode = Node(boardState, None, 0, -1)
 
-    getScore(myNode)
+    print("Children of myNode: \n", myNode.children) #borked lol
+    print()
+    
+    abPruning(myNode.children) #also borked lol
+    
     
     # GameBoard = Board()
     # win = False
