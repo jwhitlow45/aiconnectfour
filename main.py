@@ -12,13 +12,9 @@ def main():
         ['x','x','-1','-1','-1','x']
     ]
     boardState = Board(grid)
-    myNode = Node(boardState, None, 0, -1)
+    myNode = Node(boardState, None, 0, 1)
 
-    print("Children of myNode: \n", myNode.children) #borked lol
-    print()
-    
-    abPruning(myNode.children) #also borked lol
-    
+    getScore(myNode)
     
     # GameBoard = Board()
     # win = False
@@ -43,7 +39,7 @@ def main():
     #         continue
         
     #     GameBoard.printGrid()
-    #     win = GameBoard.checkWin(movecol)
+    #     win = GameBoard.isWin(movecol)
     #     if win:
     #         break
         

@@ -2,7 +2,7 @@ from typing import List
 from copy import deepcopy
 import math
 
-from src.Board import Board, ROW_SIZE, COL_SIZE, BOT_PIECE, EMPTY
+from src.Board import Board, ROW_SIZE, COL_SIZE, BOT_PIECE , EMPTY
 from src.Node import Node
 
 def abPruning(node: Node, alpha = -math.inf, beta = math.inf):
