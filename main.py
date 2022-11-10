@@ -1,6 +1,6 @@
 from src.Board import Board
 from src.Node import Node
-from src.Antwan import getScore, abPruning
+from src.Antwan import *
 
 def main():
 
@@ -14,7 +14,7 @@ def main():
     boardState = Board(grid)
     myNode = Node(boardState, None, 0, 1)
 
-    getScore(myNode)
+    buildDecisionTree()
     
     # GameBoard = Board()
     # win = False
