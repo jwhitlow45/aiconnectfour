@@ -27,6 +27,8 @@ WINDOW_LENGTH = 4
 RADIUS = int(SQUARE_SIZE/2 - 5) #size of circle spaces
 
 EMPTY = 0
+STATES = set()
+RESULTS = dict()
 
 def createBoard(): #creates board structure
     board = np.zeros((ROW_COUNT,COLUMN_COUNT))
@@ -95,7 +97,7 @@ def winMove(board, piece): #checks all possible move locations
                     
             if count >= 4:
                 return True
-            
+          
     return False
 
 def drawBoard(board): #draws the board to make it easier to play
@@ -187,7 +189,14 @@ def scorePosition(board, piece): #applying score to state
 def isTerminalNode(board): #Finds child or Leaf Nodes
     return (winMove(board, PLAYER_PIECE), PLAYER_PIECE) or (winMove(board, AI_PIECE), AI_PIECE) or (len(getValidLoc(board)) == 0, None)
 
+
 def minMAX(board, depth, alpha, beta, maxingPlayer): #Recursive minmax function with alpha beta Pruning
+    hashboard = tuple(map(tuple, board))
+    if hashboard in STATES:
+        return (None, 900000000000000) # terminate tree early and dont explore again
+    if depth <= 1:
+        STATES.add(hashboard)
+    
     validLocations = getValidLoc(board)
     isTerm, winner = isTerminalNode(board)
     if isTerm:
@@ -301,10 +310,11 @@ while not gameOver:
                         
     #player 2 move
     if turn == AI and not gameOver:
+        STATES = set()
         
         #column = random.randint(0, COLUMN_COUNT - 1)
         #column = pickBestMove(board, AI_PIECE)
-        column, Ascore = minMAX(board, 6, -math.inf, math.inf, True)
+        column, Ascore = minMAX(board, 8, -math.inf, math.inf, True)
         pygame.time.wait(1000)
 
         print("Bot Choose: " + str(column))
