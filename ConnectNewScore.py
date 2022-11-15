@@ -28,7 +28,6 @@ RADIUS = int(SQUARE_SIZE/2 - 5) #size of circle spaces
 
 EMPTY = 0
 STATES = set()
-RESULTS = dict()
 
 def createBoard(): #creates board structure
     board = np.zeros((ROW_COUNT,COLUMN_COUNT))
@@ -193,7 +192,7 @@ def isTerminalNode(board): #Finds child or Leaf Nodes
 def minMAX(board, depth, alpha, beta, maxingPlayer): #Recursive minmax function with alpha beta Pruning
     hashboard = tuple(map(tuple, board))
     if hashboard in STATES:
-        return (None, 900000000000000) # terminate tree early and dont explore again
+        return (None, scorePosition(board, AI_PIECE)) # terminate tree early and dont explore again
     if depth <= 1:
         STATES.add(hashboard)
     
@@ -314,7 +313,7 @@ while not gameOver:
         
         #column = random.randint(0, COLUMN_COUNT - 1)
         #column = pickBestMove(board, AI_PIECE)
-        column, Ascore = minMAX(board, 8, -math.inf, math.inf, True)
+        column, Ascore = minMAX(board, 7, -math.inf, math.inf, True)
         pygame.time.wait(1000)
 
         print("Bot Choose: " + str(column))
