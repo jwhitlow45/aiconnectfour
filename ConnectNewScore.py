@@ -246,6 +246,8 @@ myFont = pygame.font.SysFont("monospace", 75)
 
 turn = AI #random.randint(PLAYER, AI) #Randomly picks who goes First
 
+moves = 0
+
 while not gameOver:
 
     for event in pygame.event.get(): #Player move
@@ -282,6 +284,8 @@ while not gameOver:
 
                     turn += 1
                     turn = turn % 2
+                    
+                    moves += 1
 
                     printBoard(board)
                     drawBoard(board)
@@ -292,7 +296,7 @@ while not gameOver:
         
         #column = random.randint(0, COLUMN_COUNT - 1)
         #column = pickBestMove(board, AI_PIECE)
-        column, Ascore = minMAX(board, 6, -math.inf, math.inf, True)
+        column, Ascore = minMAX(board, 6 + moves//10, -math.inf, math.inf, True)
 
         print("Bot Choose: " + str(column))
         if isValidLoc(board, column):
@@ -303,6 +307,7 @@ while not gameOver:
                 label = myFont.render("PLAYER 2 WINS!!!", 1, YEL)
                 screen.blit(label, (40,10))
                 gameOver = True
+            moves += 1
 
             printBoard(board)
             drawBoard(board)
@@ -311,5 +316,5 @@ while not gameOver:
             turn = turn % 2
 
     if gameOver:
-        pygame.time.wait(10000)
+        pygame.time.wait(100000)
            
