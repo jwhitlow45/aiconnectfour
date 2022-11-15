@@ -108,6 +108,46 @@ def countEmptySpaces(board):
                 empties += 1
     return empties
 
+def scorePosition2(board, piece): #applying score to state
+    score = 0
+
+    # Center Position Score
+    centerArray = [int(i) for i in list(board[:, COLUMN_COUNT//2])]
+    centerCount = centerArray.count(piece)
+    score += centerCount * 6
+
+    # Horizontal Score
+    for row in range(ROW_COUNT):
+        rowArray = [int(i) for i in list(board[row,:])]
+        for col in range(COLUMN_COUNT - 3):
+            window = rowArray[col:col + WINDOW_LENGTH]
+
+            score += evaluateWindow(window, piece)
+ 
+    # Vertical Score
+    for col in range(COLUMN_COUNT):
+        colArray = [int(i) for i in list(board[:,col])]
+        for row in range(ROW_COUNT - 3):
+            window = colArray[row:row + WINDOW_LENGTH]
+
+            score += evaluateWindow(window, piece)
+
+    # Pos slope Diagonal
+    for row in range(ROW_COUNT - 3):
+        for col in range(COLUMN_COUNT - 3):
+            window = [board[row + i][col + i] for i in range(WINDOW_LENGTH)]
+
+            score += evaluateWindow(window, piece)
+            
+    # Neg Slope Diagonal 
+    for row in range(ROW_COUNT - 3):
+        for col in range(COLUMN_COUNT - 3):
+            window = [board[row + 3 - i][col + i] for i in range(WINDOW_LENGTH)]
+
+            score += evaluateWindow(window, piece)
+
+    return score
+
 # 1.0
 def scorePosition(board, piece): #applying score to state
     empties = countEmptySpaces(board)
@@ -158,6 +198,51 @@ def scorePosition(board, piece): #applying score to state
 def isTerminalNode(board): #Finds child or Leaf Nodes
     return winMove(board, PLAYER_PIECE) or winMove(board, AI_PIECE) or len(getValidLoc(board)) == 0
 
+def minMAX2(board, depth, alpha, beta, maxingPlayer): #Recursive minmax function with alpha beta Pruning
+    validLocations = getValidLoc(board)
+    isTerm = isTerminalNode(board)
+    if depth == 0 or isTerm:
+        if isTerm:
+            if winMove(board, AI_PIECE): # Win for AI
+                return (None, 10000000000000000)
+            elif winMove(board, PLAYER_PIECE): # win for Oppenent
+                return (None, -10000000000000000)
+            else: # No valid move
+                return (None, 0)
+        else: #depth is zero
+            return (None, scorePosition2(board, AI_PIECE))
+
+    if maxingPlayer:
+        value = -math.inf
+        column = random.choice(validLocations)
+        for col in validLocations:
+            row = getNextOpenRow(board, col)
+            temp = board.copy()
+            dropPiece(temp, row, col, AI_PIECE)
+            newScore = minMAX(temp, depth - 1, alpha, beta, False)[1]
+            if newScore > value:
+                value = newScore
+                column = col
+            alpha = max(alpha, value)
+            if alpha >= beta:
+                break
+        return column, value
+    else: # min player
+        value = math.inf
+        column = random.choice(validLocations)
+        for col in validLocations:
+            row = getNextOpenRow(board, col)
+            temp = board.copy()
+            dropPiece(temp, row, col, PLAYER_PIECE)
+            newScore = minMAX(temp, depth - 1, alpha, beta, True)[1]
+            if newScore < value:
+                value = newScore
+                column = col
+            beta = min(beta, value)
+            if alpha >= beta:
+                break
+        return column, value
+
 def minMAX(board, depth, alpha, beta, maxingPlayer): #Recursive minmax function with alpha beta Pruning
     validLocations = getValidLoc(board)
     isTerm = isTerminalNode(board)
@@ -170,7 +255,7 @@ def minMAX(board, depth, alpha, beta, maxingPlayer): #Recursive minmax function 
             else: # No valid move
                 return (None, 0)
         else: #depth is zero
-            return (None, scorePosition(board, AI_PIECE))
+            return (None, scorePosition2(board, AI_PIECE))
 
     if maxingPlayer:
         value = -math.inf
@@ -262,29 +347,32 @@ while not gameOver:
                 pygame.draw.circle(screen, YEL, (posX, SQUARE_SIZE/2), RADIUS)
             '''
             pygame.display.update()
-
+        '''
         if event.type == pygame.MOUSEBUTTONDOWN:
             pygame.draw.rect(screen, BLACK, ( 0,0, width, SQUARE_SIZE))
+        '''
+    if turn == PLAYER:
+        #posX = event.pos[0]
+        #column = math.floor(posX/SQUARE_SIZE)
 
-            if turn == PLAYER:
-                posX = event.pos[0]
-                column = math.floor(posX/SQUARE_SIZE)
+        column, Ascore = minMAX2(board, 5, -math.inf, math.inf, True)
+        #pygame.time.wait(1000)
+        print("Bot1 chose: " + str(column))
+        if isValidLoc(board, column):
+            row = getNextOpenRow(board, column)
+            dropPiece(board, row, column, PLAYER_PIECE)
 
-                if isValidLoc(board, column):
-                    row = getNextOpenRow(board, column)
-                    dropPiece(board, row, column, PLAYER_PIECE)
+        if winMove(board, PLAYER_PIECE):
+                print("Player 1 Wins")
+                label = myFont.render("PLAYER 1 WINS!!!", 1, RED)
+                screen.blit(label, (40,10))
+                gameOver = True
 
-                    if winMove(board, PLAYER_PIECE):
-                        print("Player 1 Wins")
-                        label = myFont.render("PLAYER 1 WINS!!!", 1, RED)
-                        screen.blit(label, (40,10))
-                        gameOver = True
+        turn += 1
+        turn = turn % 2
 
-                    turn += 1
-                    turn = turn % 2
-
-                    printBoard(board)
-                    drawBoard(board)
+        printBoard(board)
+        drawBoard(board)
 
                         
     #player 2 move
@@ -293,7 +381,7 @@ while not gameOver:
         #column = random.randint(0, COLUMN_COUNT - 1)
         #column = pickBestMove(board, AI_PIECE)
         column, Ascore = minMAX(board, 5, -math.inf, math.inf, True)
-        pygame.time.wait(1000)
+        #pygame.time.wait(1000)
 
         print("Bot Choose: " + str(column))
         if isValidLoc(board, column):
@@ -312,5 +400,5 @@ while not gameOver:
             turn = turn % 2
 
     if gameOver:
-        pygame.time.wait(10000)
+        pygame.time.wait(5000)
            
