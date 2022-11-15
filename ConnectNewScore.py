@@ -70,6 +70,9 @@ def winMove(board, piece): #checks all possible move locations
         moves: List[List] = [[0,1], [1,0], [1,1], [1,-1]]
         player: str = board[i][col]
         
+        if player != piece:
+            continue
+        
         for move in moves:
             count: int = 1
             
@@ -116,14 +119,14 @@ def evaluateWindow(window, piece): # Looks at possible spaces and scores it depe
         opponentPiece = AI_PIECE
 
     if window.count(piece) == 4:
-        score += 100 # 4 in a row
+        score += float('inf') # 4 in a row
     elif window.count(piece) == 3 and window.count(EMPTY) == 1:
         score += 10 # 3 in a row
     elif window.count(piece) == 2 and window.count(EMPTY) == 2:
         score += 5 # 2 in a row
         
     if window.count(opponentPiece) == 3 and window.count(EMPTY) == 1:
-        score -= 10 #Block Value
+        score -= float('inf') #Block Value
     
     return score
 
@@ -137,7 +140,6 @@ def countEmptySpaces(board):
 
 # 1.0
 def scorePosition(board, piece): #applying score to state
-    empties = countEmptySpaces(board)
     if winMove(board, AI_PIECE):
         return float('inf')
     if winMove(board, PLAYER_PIECE):
@@ -235,22 +237,6 @@ def getValidLoc(board): #creates a list of valid locations to place
         if isValidLoc(board, col):
             validLocations.append(col)
     return validLocations
-
-def pickBestMove(board, piece):
-    
-    validLocations = getValidLoc(board)
-    bestScore = -1000000
-    bestCol = random.choice(validLocations)
-    for col in validLocations:
-        row = getNextOpenRow(board, col)
-        temp = board.copy()
-        dropPiece(temp, row, col, piece)
-        score = scorePosition(temp, piece)
-        if score > bestScore:
-            bestScore = score
-            bestCol = col
-
-    return bestCol
 
 
 board = createBoard()
