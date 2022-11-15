@@ -1,7 +1,7 @@
 from typing import List, Tuple
 
-ROW_SIZE = 5
-COL_SIZE = 4
+ROW_SIZE = 7
+COL_SIZE = 6
 P1_PIECE = 1
 P2_PIECE = 2
 EMPTY = 0

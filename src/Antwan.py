@@ -10,14 +10,16 @@ def buildDecisionTree():
     board = Board(grid)
     root = Node(board, [], None)
     recursiveABMinMax(root)
-    for child in root.children:
-        print(child.children)
     
 
 def recursiveABMinMax(node: Node):
 
     # base case
     if node.state.countEmpty() == 0: # score is 0 given a draw
+        node.score = 0
+        return
+    
+    if node.depth == 11:
         node.score = 0
         return
     
@@ -53,7 +55,6 @@ def recursiveABMinMax(node: Node):
             
             value = max(value, cNode.score)
             if value >= node.beta:
-                print('prune', node.alpha, node.beta, value)
                 break
             node.alpha = max(node.alpha, value)
         
@@ -75,7 +76,6 @@ def recursiveABMinMax(node: Node):
             
             value = min(value, cNode.score)
             if value <= node.alpha:
-                print('prune', node.alpha, node.beta, value)
                 break
             node.beta = min(node.beta, value)
             
