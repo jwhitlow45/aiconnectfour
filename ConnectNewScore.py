@@ -4,6 +4,8 @@ import sys
 import math
 import random
 
+from typing import List
+
 SQUARE_SIZE = 100 #individual Squares on board Drawn
 
 BLUE = (0,0,255)
@@ -44,29 +46,54 @@ def getNextOpenRow(board, col):
 def printBoard(board):
     print(np.flip(board, 0))
 
+def isInBounds(row, col):
+    return not (row < 0 or col < 0 or row >= ROW_COUNT or col >= COLUMN_COUNT)
+
 def winMove(board, piece): #checks all possible move locations
-    # Horizontal Locations
-    for col in range(COLUMN_COUNT-3):
-        for row in range(ROW_COUNT):
-            if board[row][col] == piece and board[row][col+1] == piece and board[row][col+2] == piece and board[row][col+3] == piece:
-                return True
-    # Vertical Wins
+    board = np.flip(board, 0)
+    
     for col in range(COLUMN_COUNT):
-        for row in range(ROW_COUNT-3):
-            if board[row][col] == piece and board[row+1][col] == piece and board[row+2][col] == piece and board[row+3][col] == piece:
+    
+        # get top row of current column
+        i: int
+        for i in range(ROW_COUNT - 1, -1, -1):
+            if board[i][col] == EMPTY:
+                i += 1
+                break
+        
+        # out of bound value will be returned if column is empty, in this case
+        # we can just return false as there are no tiles in the current column
+        if i >= ROW_COUNT:
+            continue
+        
+        # check every direction for player win
+        moves: List[List] = [[0,1], [1,0], [1,1], [1,-1]]
+        player: str = board[i][col]
+        
+        for move in moves:
+            count: int = 1
+            
+            # check in one direction for win, then opposite direction while
+            # tracking the number of tiles for current player
+            for dir in [-1,1]:
+                rowcur: int = i
+                colcur: int = col
+                rowdir: int = move[0] * dir
+                coldir: int = move[1] * dir
+                
+                while isInBounds(rowcur + rowdir, colcur + coldir):
+                    rowcur += rowdir
+                    colcur += coldir
+                    
+                    if board[rowcur][colcur] == player:
+                        count += 1
+                    else:
+                        break
+                    
+            if count >= 4:
                 return True
-
-    # Check positive slope diagnol
-    for col in range(COLUMN_COUNT-3):
-        for row in range(ROW_COUNT-3):
-            if board[row][col] == piece and board[row+1][col+1] == piece and board[row+2][col+2] == piece and board[row+3][col+3] == piece:
-                return True
-
-    # Check negative slope diagnol
-    for col in range(COLUMN_COUNT-3):
-        for row in range(3, ROW_COUNT):
-            if board[row][col] == piece and board[row-1][col+1] == piece and board[row-2][col+2] == piece and board[row-3][col+3] == piece:
-                return True
+            
+    return False
 
 def drawBoard(board): #draws the board to make it easier to play
     for col in range(COLUMN_COUNT):
@@ -112,9 +139,9 @@ def countEmptySpaces(board):
 def scorePosition(board, piece): #applying score to state
     empties = countEmptySpaces(board)
     if winMove(board, AI_PIECE):
-        return empties * 1000
+        return float('inf')
     if winMove(board, PLAYER_PIECE):
-        return -empties * 1000
+        return -float('inf')
 
     score = 0
 
@@ -156,21 +183,20 @@ def scorePosition(board, piece): #applying score to state
     return score
 
 def isTerminalNode(board): #Finds child or Leaf Nodes
-    return winMove(board, PLAYER_PIECE) or winMove(board, AI_PIECE) or len(getValidLoc(board)) == 0
+    return (winMove(board, PLAYER_PIECE), PLAYER_PIECE) or (winMove(board, AI_PIECE), AI_PIECE) or (len(getValidLoc(board)) == 0, None)
 
 def minMAX(board, depth, alpha, beta, maxingPlayer): #Recursive minmax function with alpha beta Pruning
     validLocations = getValidLoc(board)
-    isTerm = isTerminalNode(board)
-    if depth == 0 or isTerm:
-        if isTerm:
-            if winMove(board, AI_PIECE): # Win for AI
-                return (None, 10000000000000000)
-            elif winMove(board, PLAYER_PIECE): # win for Oppenent
-                return (None, -10000000000000000)
-            else: # No valid move
-                return (None, 0)
-        else: #depth is zero
-            return (None, scorePosition(board, AI_PIECE))
+    isTerm, winner = isTerminalNode(board)
+    if isTerm:
+        if winner == AI_PIECE:
+            return (None, 10000000000000000)
+        elif winner == PLAYER_PIECE:                
+            return (None, -10000000000000000)
+        else: # No valid move
+            return (None, 0)
+    elif depth == 0: #depth is zero
+        return (None, scorePosition(board, AI_PIECE))
 
     if maxingPlayer:
         value = -math.inf
@@ -292,7 +318,7 @@ while not gameOver:
         
         #column = random.randint(0, COLUMN_COUNT - 1)
         #column = pickBestMove(board, AI_PIECE)
-        column, Ascore = minMAX(board, 5, -math.inf, math.inf, True)
+        column, Ascore = minMAX(board, 6, -math.inf, math.inf, True)
         pygame.time.wait(1000)
 
         print("Bot Choose: " + str(column))
