@@ -243,7 +243,7 @@ pygame.display.update()
 
 myFont = pygame.font.SysFont("monospace", 75)
 
-turn = AI #random.randint(PLAYER, AI) #Randomly picks who goes First
+turn = PLAYER #random.randint(PLAYER, AI) #Randomly picks who goes First
 
 moves = 0
 
