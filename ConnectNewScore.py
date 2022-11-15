@@ -110,11 +110,10 @@ def countEmptySpaces(board):
 
 # 1.0
 def scorePosition(board, piece): #applying score to state
-    empties = countEmptySpaces(board)
     if winMove(board, AI_PIECE):
-        return empties * 1000
+        return float('inf')
     if winMove(board, PLAYER_PIECE):
-        return -empties * 1000
+        return -float('inf')
 
     score = 0
 
@@ -297,6 +296,7 @@ while not gameOver:
         #column = random.randint(0, COLUMN_COUNT - 1)
         #column = pickBestMove(board, AI_PIECE)
         column, Ascore = minMAX(board, 6 + moves//10, -math.inf, math.inf, True)
+        pygame.time.wait(100)
 
         print("Bot Choose: " + str(column))
         if isValidLoc(board, column):
