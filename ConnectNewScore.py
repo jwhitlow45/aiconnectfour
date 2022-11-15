@@ -314,7 +314,6 @@ while not gameOver:
         #column = random.randint(0, COLUMN_COUNT - 1)
         #column = pickBestMove(board, AI_PIECE)
         column, Ascore = minMAX(board, 7, -math.inf, math.inf, True)
-        pygame.time.wait(1000)
 
         print("Bot Choose: " + str(column))
         if isValidLoc(board, column):
